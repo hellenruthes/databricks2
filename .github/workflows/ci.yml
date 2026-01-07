@@ -23,10 +23,26 @@ jobs:
       - name: Set up Databricks CLI
         uses: databricks/setup-cli@main
 
-      - name: Validate + Deploy bundle to dev
+      - name: Build wheel
+        run: |
+          rm -rf dist build *.egg-info
+          python -m build
+          ls -lah dist
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Upload wheel to Workspace
         env:
           DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
           DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
         run: |
-          databricks bundle validate -t dev
-          databricks bundle deploy -t dev
+          # escolhe o wheel gerado
+          WHEEL=$(ls dist/*.whl | head -n 1)
+          echo "Wheel: $WHEEL"
+
+          # cria pasta de wheels no Workspace (ignora erro se já existir)
+          databricks workspace mkdirs "/Workspace/Users/hellenruthes@gmail.com/wheels" || true
+
+          # sobe o wheel (sobrescreve)
+          databricks workspace import "$WHEEL" "/Workspace/Users/hellenruthes@gmail.com/wheels/weekly_report_latest.whl" --overwrite

@@ -22,7 +22,7 @@ resources:
           existing_cluster_id: 0105-192402-luuwxoyl
 
           libraries:
-            - whl: ${artifacts.weekly_wheel}
+            - whl: "/Workspace/Users/hellenruthes@gmail.com/wheels/weekly_report_latest.whl"
 
           python_wheel_task:
             package_name: "weekly-report"
