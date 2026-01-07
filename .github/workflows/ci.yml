@@ -19,7 +19,7 @@ jobs:
 
       - name: Install build + Databricks CLI
         run: |
-            pip install -U pip build databricks-cli
+            pip install -U pip build databricks
 
       - name: Build wheel
         run: |
