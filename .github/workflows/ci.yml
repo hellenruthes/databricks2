@@ -22,33 +22,16 @@ jobs:
 
       - name: Install build + Databricks CLI (new)
         run: |
-          python -m pip install -U pip build
-          python -m pip install -U databricks
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Verify Databricks CLI
-        run: |
-          which databricks
+          python -m pip install -U pip build pipx
+          python -m pipx ensurepath
+          pipx install databricks
           databricks --version
-          databricks bundle --help | head -n 20
 
       - name: Build wheel
         run: |
           rm -rf dist build *.egg-info
           python -m build
-
-      - name: Show build outputs
-        run: |
-          ls -lah
           ls -lah dist
-
-      # Opcional: deixa o wheel disponível pra download na página do run
-      - name: Upload wheel artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: weekly-report-wheel
-          path: dist/*.whl
-          if-no-files-found: error
 
       - name: Deploy bundle to dev
         env:
@@ -57,23 +40,3 @@ jobs:
         run: |
           databricks bundle validate -t dev
           databricks bundle deploy -t dev
-
-      # Opcional: smoke test rodando o job após deploy
-      # Troque "weekly_report_job" pelo nome do job no seu databricks.yml (resources.jobs.<KEY>)
-      # - name: Smoke test (run job)
-      #   env:
-      #     DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
-      #     DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
-      #   run: |
-      #     databricks bundle run -t dev weekly_report_job
-
-
-    #steps:
-        #- uses: actions/checkout@v4
-        #- uses: databricks/setup-cli@main
-        #- run: databricks bundle deploy #--target dev --profile hellen_dev
-          #env:
-                #DATABRICKS_BUNDLE_ENV: dev
-                #DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
-                #DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
-       
