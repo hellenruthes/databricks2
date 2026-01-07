@@ -28,21 +28,14 @@ jobs:
         run: |
           rm -rf dist build *.egg-info
           python -m build
-          ls -lah dist
 
       - name: Assert wheel exists
         run: |
-            ls -lah dist
-            test -f dist/*.whl
+          ls -lah dist
+          test -f dist/*.whl
 
-      # Instala o Databricks CLI NOVO (binário) — necessário para "databricks bundle ..."
       - name: Set up Databricks CLI
         uses: databricks/setup-cli@main
-
-      - name: Verify Databricks CLI
-        run: |
-          databricks -v || databricks version
-          databricks bundle --help | head -n 20
 
       - name: Validate + Deploy bundle to dev
         env:
