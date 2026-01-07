@@ -1,11 +1,6 @@
 bundle:
   name: weekly-report
 
-artifacts:
-  weekly_wheel:
-    type: whl
-    path: .
-
 targets:
   dev:
     mode: development
