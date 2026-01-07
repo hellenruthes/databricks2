@@ -44,8 +44,11 @@ jobs:
 
           databricks workspace mkdirs "/Workspace/Users/hellenruthes@gmail.com/wheels" || true
 
-          # OBS: workspace import é para arquivos do Workspace; se der erro de formato, me cola o erro que eu troco pelo comando certo do CLI
-          databricks workspace import "$WHEEL" "/Workspace/Users/hellenruthes@gmail.com/wheels/weekly_report_latest.whl" --overwrite
+          databricks workspace import \
+            "/Workspace/Users/hellenruthes@gmail.com/wheels/weekly_report_latest.whl" \
+            --file "$WHEEL" \
+            --format RAW \
+            --overwrite
 
       # Opcional: atualizar/criar o Job via bundle (se você estiver usando databricks.yml no repo)
       - name: Validate + Deploy bundle to dev (optional)
