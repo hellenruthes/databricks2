@@ -29,6 +29,12 @@ jobs:
           rm -rf dist build *.egg-info
           python -m build
 
+      - name: Normalize wheel name
+        run: |
+          WHEEL=$(ls dist/*.whl | head -n 1)
+          cp "$WHEEL" dist/package.whl
+          ls -lah dist
+
       - name: Assert wheel exists
         run: |
           ls -lah dist
