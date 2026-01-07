@@ -1,29 +1,54 @@
 name: deploy_to_dev
+
 on:
-    push:
-        branches:
-            - main
-    workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   deploy:
     name: "deploy bundle to dev"
     runs-on: ubuntu-latest
     environment: dev
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-            python-version: "3.10"
+          python-version: "3.10"
 
-      - name: Install build + Databricks CLI
+      - name: Install build + Databricks CLI (new)
         run: |
-            pip install -U pip build databricks
+          python -m pip install -U pip build
+          python -m pip install -U databricks
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Verify Databricks CLI
+        run: |
+          which databricks
+          databricks --version
+          databricks bundle --help | head -n 20
 
       - name: Build wheel
         run: |
-            python -m build
+          rm -rf dist build *.egg-info
+          python -m build
+
+      - name: Show build outputs
+        run: |
+          ls -lah
+          ls -lah dist
+
+      # Opcional: deixa o wheel disponível pra download na página do run
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-report-wheel
+          path: dist/*.whl
+          if-no-files-found: error
 
       - name: Deploy bundle to dev
         env:
@@ -32,6 +57,16 @@ jobs:
         run: |
           databricks bundle validate -t dev
           databricks bundle deploy -t dev
+
+      # Opcional: smoke test rodando o job após deploy
+      # Troque "weekly_report_job" pelo nome do job no seu databricks.yml (resources.jobs.<KEY>)
+      # - name: Smoke test (run job)
+      #   env:
+      #     DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
+      #     DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
+      #   run: |
+      #     databricks bundle run -t dev weekly_report_job
+
 
     #steps:
         #- uses: actions/checkout@v4
