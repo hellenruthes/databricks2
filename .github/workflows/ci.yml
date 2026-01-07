@@ -36,9 +36,10 @@ jobs:
           ls -lah dist
 
       - name: Assert wheel exists
+        shell: bash
         run: |
           ls -lah dist
-          test -f dist/*.whl
+          [[ -f dist/package.whl ]]
 
       - name: Set up Databricks CLI
         uses: databricks/setup-cli@main
