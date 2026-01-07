@@ -42,3 +42,24 @@ python weekly_job.py \
   --topics "Resources Weekly Used..." \
   --data "" \
   --verbose
+
+
+  ##On databricks
+  python -m venv .venv
+source .venv/bin/activate
+pip install -U pip build
+python -m build
+
+
+ls dist/
+# agents_ia-0.1.0-py3-none-any.whl
+
+databricks fs mkdirs dbfs:/FileStore/wheels
+databricks fs cp dist/*.whl dbfs:/FileStore/wheels/ --overwrite
+
+databricks fs mkdirs dbfs:/FileStore/wheels
+databricks fs cp dist/weekly_report-0.1.0-py3-none-any.whl \
+  dbfs:/FileStore/wheels/weekly_report-0.1.0-py3-none-any.whl \
+  --overwrite
+
+databricks fs ls dbfs:/FileStore/wheels
