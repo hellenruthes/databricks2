@@ -1,0 +1,23 @@
+[project]
+name = "weekly-report"
+version = "0.1.0"
+description = "Weekly report generator using CrewAI"
+requires-python = ">=3.12"
+
+dependencies = [
+  "crewai==1.7.2",
+  "pydantic>=2.0",
+  "mlflow>=3.8",
+  "python-dotenv"
+]
+
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
