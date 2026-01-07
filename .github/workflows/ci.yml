@@ -20,8 +20,10 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Set up Databricks CLI
-        uses: databricks/setup-cli@main
+      - name: Install build tooling
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U build
 
       - name: Build wheel
         run: |
@@ -37,12 +39,20 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
           DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
         run: |
-          # escolhe o wheel gerado
           WHEEL=$(ls dist/*.whl | head -n 1)
           echo "Wheel: $WHEEL"
 
-          # cria pasta de wheels no Workspace (ignora erro se já existir)
           databricks workspace mkdirs "/Workspace/Users/hellenruthes@gmail.com/wheels" || true
 
-          # sobe o wheel (sobrescreve)
+          # OBS: workspace import é para arquivos do Workspace; se der erro de formato, me cola o erro que eu troco pelo comando certo do CLI
           databricks workspace import "$WHEEL" "/Workspace/Users/hellenruthes@gmail.com/wheels/weekly_report_latest.whl" --overwrite
+
+      # Opcional: atualizar/criar o Job via bundle (se você estiver usando databricks.yml no repo)
+      - name: Validate + Deploy bundle to dev (optional)
+        if: ${{ always() }}
+        env:
+          DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
+          DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
+        run: |
+          databricks bundle validate -t dev
+          databricks bundle deploy -t dev
