@@ -25,6 +25,14 @@ jobs:
         run: |
             python -m build
 
+      - name: Deploy bundle to dev
+        env:
+          DATABRICKS_HOST: ${{ secrets.HOST_DEV }}
+          DATABRICKS_TOKEN: ${{ secrets.TOKEN_DEV }}
+        run: |
+          databricks bundle validate -t dev
+          databricks bundle deploy -t dev
+
     #steps:
         #- uses: actions/checkout@v4
         #- uses: databricks/setup-cli@main

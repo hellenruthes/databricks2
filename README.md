@@ -29,14 +29,14 @@ tree -L 4 -I ".venv|__pycache__|*.egg-info|.git"
 ##
 | Tipo de coisa    | Onde fica        | Por quê                                 |
 | ---------------- | ---------------- | --------------------------------------- |
-| **Job**          | `weekly/jobs/`   | É o *entrypoint* (Databricks roda isso) |
-| **Crew**         | `weekly/crews/`  | Orquestra agents + tasks                |
-| **Agent**        | `weekly/agents/` | Responsabilidade cognitiva              |
-| **Task**         | `weekly/tasks/`  | Prompt / contrato de trabalho           |
-| **Utils comuns** | `common/`        | Compartilhado entre domínios            |
+| **Job**          | `weekly/jobs/`   | *entrypoint* (Databricks runs) |
+| **Crew**         | `weekly/crews/`  | Orchestrate agents + tasks                |
+| **Agent**        | `weekly/agents/` | Cognitive              |
+| **Task**         | `weekly/tasks/`  | Prompt            |
+| **Utils comuns** | `common/`        | Common           |
 
 
-cd /Users/hellenruthes/dev/databricks2/src/agents_ai/weekly/jobs
+cd /Users/hellenruthes/dev/databricks2/src/agents_ai/weekly_reports/jobs
 python weekly_job.py \
   --week_of 2026-01-05 \
   --topics "Resources Weekly Used..." \

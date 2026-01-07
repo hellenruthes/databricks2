@@ -1,9 +1,10 @@
-# This is a Databricks asset bundle definition for databricks2.
-# The Databricks extension requires databricks.yml configuration file.
-# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
-
 bundle:
-  name: databricks2
+  name: weekly-report
+
+artifacts:
+  weekly_wheel:
+    type: whl
+    path: dist/*.whl
 
 targets:
   dev:
@@ -12,8 +13,24 @@ targets:
     workspace:
       host: https://adb-7405607729396189.9.azuredatabricks.net
 
-  ## Optionally, there could be 'staging' or 'prod' targets here.
-  #
-  # prod:
-  #   workspace:
-  #     host: https://adb-7405607729396189.9.azuredatabricks.net
+resources:
+  jobs:
+    weekly_report_job:
+      name: weekly_report_job
+      tasks:
+        - task_key: weekly
+          existing_cluster_id: 0105-192402-luuwxoyl
+
+          libraries:
+            - whl: ${artifacts.weekly_wheel}
+
+          python_wheel_task:
+            package_name: "weekly-report"
+            entry_point: "weekly-report"
+            named_parameters:
+              week_of: "2026-01-05"
+              topics: "Resources Weekly Used - created table and dashboard"
+              model: "gpt-4o-mini"
+              data: ""
+              secret_scope: "hellendev2"
+              openai_key_name: "openaiapi"
