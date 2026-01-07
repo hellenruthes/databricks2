@@ -4,7 +4,7 @@ bundle:
 artifacts:
   weekly_wheel:
     type: whl
-    path:  dist/package.whl
+    path: .
 
 targets:
   dev:
