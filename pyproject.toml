@@ -12,8 +12,8 @@ dependencies = [
 ]
 
 [project.scripts]
-weekly-report = "weekly_report.weekly_job:main"
-# ^^^ ajuste esse caminho para o seu módulo real
+weekly-report = "agents_ai.weekly_report.jobs.weekly_job:main"
+
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
